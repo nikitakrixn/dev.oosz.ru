@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
+            {{ __('nav.dashboard') }}
         </h2>
     </x-slot>
 
@@ -87,7 +87,7 @@
         
                 <div class="mt-1 flex items-center gap-x-2">
                     <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-                    50
+                    {{ $employeeHaveEP }}
                     </h3>
                 </div>
                 </div>
