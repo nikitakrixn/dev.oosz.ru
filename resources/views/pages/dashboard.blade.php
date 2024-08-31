@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
+            {{ __('dashboard.title') }} 
         </h2>
     </x-slot>
 
@@ -15,7 +15,7 @@
                 <div class="p-4 md:p-5">
                 <div class="flex items-center gap-x-2">
                     <p class="text-xs uppercase tracking-wide text-gray-500">
-                    Всего сотрудников
+                    {{ __('dashboard.total_employees') }}
                     </p>
                 </div>
         
@@ -39,7 +39,7 @@
                 <div class="p-4 md:p-5">
                 <div class="flex items-center gap-x-2">
                     <p class="text-xs uppercase tracking-wide text-gray-500">
-                    Всего имущества
+                    {{ __('dashboard.total_assets') }}
                     </p>
                 </div>
         
@@ -57,7 +57,7 @@
                 <div class="p-4 md:p-5">
                 <div class="flex items-center gap-x-2">
                     <p class="text-xs uppercase tracking-wide text-gray-500">
-                    Всего компьютеров
+                    {{ __('dashboard.total_computers') }}
                     </p>
                 </div>
         
@@ -81,13 +81,13 @@
                 <div class="p-4 md:p-5">
                 <div class="flex items-center gap-x-2">
                     <p class="text-xs uppercase tracking-wide text-gray-500">
-                    Сотрудники имеющие подпись
+                    {{ __('dashboard.employees_with_signature') }}
                     </p>
                 </div>
         
                 <div class="mt-1 flex items-center gap-x-2">
                     <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-                    50
+                    {{ $employeeHaveEP }}
                     </h3>
                 </div>
                 </div>

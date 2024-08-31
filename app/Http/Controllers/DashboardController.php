@@ -10,6 +10,10 @@ class DashboardController extends Controller
     public function index()
     {
         $employeeCount = Employee::count();
-        return view('pages.dashboard', [ 'employeeCount' => $employeeCount ]);
+        $employeeHaveEP = Employee::where('ep_access', '!=', 0)->count();
+        return view('pages.dashboard', [ 
+            'employeeCount' => $employeeCount,
+            'employeeHaveEP' => $employeeHaveEP
+        ]);
     }
 }
