@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use EmployeesTableSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,7 +27,8 @@ class DatabaseSeeder extends Seeder
             ProcurementDepartmentEmployeeSeeder::class,
             LandRelationsDepartmentEmployeeSeeder::class,
             PlanningEconomicsDepartmentEmployeeSeeder::class,
-            AdminHrDepartmentEmployeeSeeder::class
+            AdminHrDepartmentEmployeeSeeder::class,
+            EmployeesTableSeeder::class
         ]);
     }
 }
