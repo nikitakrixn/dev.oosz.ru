@@ -14,31 +14,33 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        {{ __('nav.dashboard') }}
                     </x-nav-link>
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ml-6">
+            <div class="hidden pr-2 sm:flex sm:items-center sm:ml-6 sm:pr-0 gap-4">
+                <button type="button" class="relative rounded-full p-1 text-gray-400 hover:text-gray-500">
+                    <span class="absolute -inset-1.5"></span>
+                    <span class="sr-only">{{ __('nav.view_notifications') }}</span>
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                    </svg>
+                </button>
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
-                            <img src="{{ asset('images/avatars/default.jpg') }}" alt="{{ Auth::user()->name }}" class="w-8 h-8 rounded-full object-cover">
-
-                            <div class="ml-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
+                        <button class="flex text-sm rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 transition duration-150 ease-in-out">
+                            <span class="sr-only">{{ __('nav.open_user_menu') }}</span>
+                            <img src="{{ asset('images/avatars/Girl_smile.png') }}" alt="{{ Auth::user()->name }}" class="w-8 h-8 rounded-full object-cover">
                         </button>
                     </x-slot>
 
                     <x-slot name="content">
                         <!-- Account Management -->
-                        <div class="block px-4 py-2 text-base text-gray-400 border-b border-gray-200">
-                            {{ Auth::user()->name }}
-                            <div>{{ Auth::user()->email }}</div>
+                        <div class="block px-4 py-3 text-sm font-semibold border-b border-gray-200">
+                            <span class="block text-sm text-gray-900 dark:text-white">{{ Auth::user()->name }}</span>
+                            <span class="block text-sm text-gray-500 truncate dark:text-gray-400">{{ Auth::user()->email }}</span>
                         </div>
 
                         <!-- Authentication -->
@@ -51,7 +53,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 mr-2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
                                 </svg>                                  
-                                {{ __('Log Out') }}
+                                {{ __('nav.logout') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
@@ -74,7 +76,7 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+                {{ __('nav.dashboard') }}
             </x-responsive-nav-link>
         </div>
 
@@ -93,7 +95,7 @@
                     <x-responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        {{ __('nav.logout') }}
                     </x-responsive-nav-link>
                 </form>
             </div>
