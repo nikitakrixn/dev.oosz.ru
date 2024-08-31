@@ -5,8 +5,9 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('dashboard') }}" class="text-base flex gap-4 items-center">
                         <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
+                        БУОО Омскоблстройзаказчик
                     </a>
                 </div>
 
@@ -23,7 +24,7 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
-                            <div>{{ Auth::user()->name }}</div>
+                            <img src="{{ asset('images/avatars/default.jpg') }}" alt="{{ Auth::user()->name }}" class="w-8 h-8 rounded-full object-cover">
 
                             <div class="ml-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -34,6 +35,12 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        <!-- Account Management -->
+                        <div class="block px-4 py-2 text-base text-gray-400 border-b border-gray-200">
+                            {{ Auth::user()->name }}
+                            <div>{{ Auth::user()->email }}</div>
+                        </div>
+
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -41,6 +48,9 @@
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 mr-2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                                </svg>                                  
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
