@@ -18,6 +18,8 @@ class EmployeesTable extends Component
     public $positionId = null;
     public $sortField = 'last_name';
     public $sortDirection = 'asc';
+    public $selectedEmployees = [];
+    public $selectAll = false;
     public $filters = [
         'department_id' => '',
         'position_id' => '',
@@ -29,6 +31,8 @@ class EmployeesTable extends Component
     public $createModal = false;
     public $editModal = false;
     public $editingEmployee = null;
+    public $showDeleteModal = false;
+    public $deleteEmployeeId = null;
 
     public $employee = [
         'first_name' => '',
@@ -84,8 +88,8 @@ class EmployeesTable extends Component
         ->orderBy($this->sortField, $this->sortDirection)
         ->paginate(10);
 
-        $departments = Department::all();
-        $positions = Position::all();
+        $departments = Department::select('id', 'name')->distinct()->orderBy('name')->get();
+        $positions = Position::select('id', 'name')->distinct()->orderBy('name')->get();
 
         return view('livewire.employees-table', [
             'employees' => $employees,
@@ -143,10 +147,34 @@ class EmployeesTable extends Component
         session()->flash('message', 'Сотрудник успешно обновлен.');
     }
 
-    public function deleteEmployee($employeeId)
+    public function deleteEmployee()
     {
-        $employee = Employee::findOrFail($employeeId);
-        $employee->delete();
-        session()->flash('message', 'Сотрудник успешно удален.');
+        $employee = Employee::find($this->deleteEmployeeId);
+        if ($employee) {
+            $employee->delete();
+            session()->flash('message', 'Сотрудник успешно удален.');
+        }
+        $this->showDeleteModal = false;
+        $this->deleteEmployeeId = null;
+    }
+
+    public function updatedSelectAll($value)
+    {
+        if ($value) {
+            $this->selectedEmployees = $this->employees->pluck('id')->map(fn($id) => (string) $id);
+        } else {
+            $this->selectedEmployees = [];
+        }
+    }
+
+    public function confirmDelete($employeeId)
+    {
+        $this->deleteEmployeeId = $employeeId;
+        $this->showDeleteModal = true;
+    }
+
+    public function deleteSelected()
+    {
+        $this->confirmDelete('selected');
     }
 }

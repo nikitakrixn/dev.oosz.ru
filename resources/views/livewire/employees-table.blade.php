@@ -26,8 +26,20 @@
                     Добавить сотрудника
                 </button>
                 
-                <!-- Фильтры -->
-                <div class="relative">
+                <div class="relative inline-block">
+                    <button @click="openActions = !openActions" type="button" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200" aria-haspopup="true" aria-expanded="true">
+                        Действия
+                        <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+
+                    <div x-show="openActions" @click.away="openActions = false" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                            <a href="#" wire:click.prevent="deleteSelected" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Удалить выбранные</a>
+                        </div>
+                    </div>
+
                     <button @click="openFilters = !openFilters" type="button" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
@@ -102,16 +114,6 @@
             </div>
         </div>
     </div>
-    <div x-show="openActions" class="z-10 absolute origin-top-right bg-white divide-y divide-gray-100 rounded shadow w-44">
-        <ul class="py-1 text-sm text-gray-700" aria-labelledby="actionsDropdownButton">
-            <li>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100">Mass Edit</a>
-            </li>
-        </ul>
-        <div class="py-1">
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Delete all</a>
-        </div>
-    </div>
     <!-- Таблица с возможностью прокрутки -->
     <div class="flex-grow overflow-auto">
         <table class="w-full text-sm text-left text-gray-500">
@@ -119,7 +121,7 @@
                 <tr>
                     <th scope="col" class="p-4">
                         <div class="flex items-center">
-                            <input id="checkbox-all-search" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                            <input id="checkbox-all-search" type="checkbox" wire:model="selectAll" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
                             <label for="checkbox-all-search" class="sr-only">checkbox</label>
                         </div>
                     </th>
@@ -170,7 +172,7 @@
                 <tr class="bg-white border-b hover:bg-gray-50">
                     <td class="w-4 p-4">
                         <div class="flex items-center">
-                            <input id="checkbox-table-search-{{ $employee->id }}" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                            <input id="checkbox-table-search-{{ $employee->id }}" type="checkbox" wire:model="selectedEmployees" value="{{ $employee->id }}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
                             <label for="checkbox-table-search-{{ $employee->id }}" class="sr-only">checkbox</label>
                         </div>
                     </td>
@@ -252,10 +254,40 @@
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h3 class="text-lg leading-6 font-medium text-gray-900">Создать сотрудника</h3>
                         <!-- Поля формы -->
-                        <div class="mt-2">
-                            <label for="first_name" class="block text-sm font-medium text-gray-700">Имя</label>
-                            <input type="text" wire:model.defer="employee.first_name" id="first_name" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                            @error('employee.first_name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        <div class="mb-4">
+                            <label for="firstName" class="block text-sm font-medium text-gray-700">Имя</label>
+                            <input type="text" id="firstName" wire:model="employee.first_name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Введите имя">
+                            @error('employee.first_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="lastName" class="block text-sm font-medium text-gray-700">Фамилия</label>
+                            <input type="text" id="lastName" wire:model="employee.last_name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Введите фамилию">
+                            @error('employee.last_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="email" wire:model="employee.email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Введите email">
+                            @error('employee.email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="department" class="block text-sm font-medium text-gray-700">Отдел</label>
+                            <select id="department" wire:model="employee.department_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <option value="">Выберите отдел</option>
+                                @foreach($departments as $department)
+                                    <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('employee.department_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="position" class="block text-sm font-medium text-gray-700">Должность</label>
+                            <select id="position" wire:model="employee.position_id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <option value="">Выберите должность</option>
+                                @foreach($positions as $position)
+                                    <option value="{{ $position->id }}">{{ $position->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('employee.position_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
                         <!-- Добавьте остальные поля формы здесь -->
                     </div>
@@ -302,6 +334,50 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно подтверждения удаления -->
+    <div x-data="{ show: @entangle('showDeleteModal') }" x-show="show" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div x-show="show" class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div x-show="show" class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <!-- Heroicon name: exclamation -->
+                            <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Подтвердите удаление
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500">
+                                    Вы уверены, что хотите удалить 
+                                    <span x-text="$wire.deleteEmployeeId === 'selected' ? 'выбранных сотрудников' : 'этого сотрудника'"></span>? 
+                                    Это действие нельзя отменить.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button wire:click="deleteEmployee" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Удалить
+                    </button>
+                    <button @click="show = false" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Отмена
+                    </button>
+                </div>
             </div>
         </div>
     </div>
