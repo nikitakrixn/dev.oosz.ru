@@ -1,4 +1,4 @@
-<div x-data="{ openActions: false, openFilters: false }" class="relative overflow-x-auto shadow-md sm:rounded-lg">
+<div x-data="{ openActions: false, openFilters: false, openModal: false }" class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <!-- Верхняя панель с поиском и фильтрами -->
     <div class="bg-white p-4">
         <div class="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0 md:space-x-4">
@@ -19,7 +19,7 @@
             
             <!-- Кнопки действий -->
             <div class="flex items-center space-x-3">
-                <button type="button" wire:click="$emit('openModal', 'create-employee')" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300">
+                <button type="button" wire:click="openCreateModal" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300">
                     <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                     </svg>
@@ -228,7 +228,7 @@
                     </td>
                     <td class="px-6 py-4">
                         <!-- Modal toggle -->
-                        <a href="#" type="button" class="font-medium text-blue-600">Редактировать</a>
+                        <a href="#" wire:click="openEditModal({{ $employee->id }})" type="button" class="font-medium text-blue-600">Редактировать</a>
                     </td>
                 </tr>
                 @endforeach
@@ -237,5 +237,72 @@
     </div>
     <div class="p-4">
         {{ $employees->links() }}
-    </div> 
+    </div>
+    <!-- Модальное окно для создания сотрудника -->
+    <div x-data="{ show: @entangle('createModal') }" x-show="show" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div x-show="show" class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div x-show="show" class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <form wire:submit.prevent="createEmployee">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Создать сотрудника</h3>
+                        <!-- Поля формы -->
+                        <div class="mt-2">
+                            <label for="first_name" class="block text-sm font-medium text-gray-700">Имя</label>
+                            <input type="text" wire:model.defer="employee.first_name" id="first_name" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            @error('employee.first_name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
+                        <!-- Добавьте остальные поля формы здесь -->
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Создать
+                        </button>
+                        <button type="button" wire:click="$set('createModal', false)" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            Отмена
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для редактирования сотрудника -->
+    <div x-data="{ show: @entangle('editModal') }" x-show="show" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div x-show="show" class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div x-show="show" class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <form wire:submit.prevent="updateEmployee">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Редактировать сотрудника</h3>
+                        <!-- Поля формы -->
+                        <div class="mt-2">
+                            <label for="edit_first_name" class="block text-sm font-medium text-gray-700">Имя</label>
+                            <input type="text" wire:model.defer="employee.first_name" id="edit_first_name" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            @error('employee.first_name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
+                        <!-- Добавьте остальные поля формы здесь -->
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Обновить
+                        </button>
+                        <button type="button" wire:click="$set('editModal', false)" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            Отмена
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

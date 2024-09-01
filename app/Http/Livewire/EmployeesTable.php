@@ -26,6 +26,36 @@ class EmployeesTable extends Component
         'ep_access' => '',
     ];
 
+    public $createModal = false;
+    public $editModal = false;
+    public $editingEmployee = null;
+
+    public $employee = [
+        'first_name' => '',
+        'last_name' => '',
+        'middle_name' => '',
+        'email' => '',
+        'phone' => '',
+        'department_id' => '',
+        'position_id' => '',
+        'is_active' => true,
+        'sed_praktika_access' => false,
+        'ep_access' => false,
+    ];
+
+    protected $rules = [
+        'employee.first_name' => 'required|string|max:255',
+        'employee.last_name' => 'required|string|max:255',
+        'employee.middle_name' => 'nullable|string|max:255',
+        'employee.email' => 'required|email|unique:employees,email',
+        'employee.phone' => 'nullable|string|max:20',
+        'employee.department_id' => 'required|exists:departments,id',
+        'employee.position_id' => 'required|exists:positions,id',
+        'employee.is_active' => 'boolean',
+        'employee.sed_praktika_access' => 'boolean',
+        'employee.ep_access' => 'boolean',
+    ];
+
     public function render()
     {
         $employees = Employee::query()
@@ -77,5 +107,46 @@ class EmployeesTable extends Component
     public function resetFilters()
     {
         $this->reset('filters');
+    }
+
+    public function openCreateModal()
+    {
+        $this->resetValidation();
+        $this->reset('employee');
+        $this->createModal = true;
+    }
+
+    public function openEditModal($employeeId)
+    {
+        $this->resetValidation();
+        $this->editingEmployee = Employee::findOrFail($employeeId);
+        $this->employee = $this->editingEmployee->toArray();
+        $this->editModal = true;
+    }
+
+    public function createEmployee()
+    {
+        $this->validate();
+        Employee::create($this->employee);
+        $this->createModal = false;
+        $this->reset('employee');
+        session()->flash('message', 'Сотрудник успешно создан.');
+    }
+
+    public function updateEmployee()
+    {
+        $this->validate([
+            'employee.email' => 'required|email|unique:employees,email,' . $this->editingEmployee->id,
+        ]);
+        $this->editingEmployee->update($this->employee);
+        $this->editModal = false;
+        session()->flash('message', 'Сотрудник успешно обновлен.');
+    }
+
+    public function deleteEmployee($employeeId)
+    {
+        $employee = Employee::findOrFail($employeeId);
+        $employee->delete();
+        session()->flash('message', 'Сотрудник успешно удален.');
     }
 }
