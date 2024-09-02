@@ -15,7 +15,6 @@ class CreatePositionsTable extends Migration
     {
         Schema::create('positions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('department_id')->constrained();
             $table->string('name');
             $table->timestamps();
         });

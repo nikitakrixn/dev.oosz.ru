@@ -1,10 +1,12 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Models\Employee;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EmployeesTableSeeder extends Seeder
+class EmployeesSettingsSeeder extends Seeder
 {
     /**
      * Run the database seeds.

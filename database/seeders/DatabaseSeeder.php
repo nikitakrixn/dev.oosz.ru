@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
             LandRelationsDepartmentEmployeeSeeder::class,
             PlanningEconomicsDepartmentEmployeeSeeder::class,
             AdminHrDepartmentEmployeeSeeder::class,
-            EmployeesTableSeeder::class
+            EmployeesSettingsSeeder::class,
         ]);
     }
 }
